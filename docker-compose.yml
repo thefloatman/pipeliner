@@ -2,28 +2,28 @@ version: '3.8'
 
 x-airflow-common:
   &airflow-common
-  image: apache/airflow
+  image: apache/airflow:2.0.1
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
-    AIRFLOW__CORE__LOAD_EXAMPLES: 'true'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS: 'false'
+    AIRFLOW__CORE__FERNET_KEY: 81HqDtbqAywKSOumSha3BhWNOdQ26slT6K0YaZeZyPs=
   volumes:
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/logs:/opt/airflow/logs
     - ./airflow/plugins:/opt/airflow/plugins
     - ./airflow/modules:/opt/airflow/modules
   depends_on:
-    redis:
-      condition: service_healthy
     postgres:
       condition: service_healthy
 
 services:
   postgres:
-    image: postgres
+    image: postgres:13
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
@@ -35,7 +35,7 @@ services:
       interval: 5s
       retries: 5
     restart: always
-
+      
   airflow-webserver:
     <<: *airflow-common
     command: webserver
@@ -46,14 +46,20 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
-    restart_policy:
-      condition: on-failure
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   airflow-scheduler:
     <<: *airflow-common
     command: scheduler
-    restart_policy:
-      condition: on-failure
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-webserver:
+        condition: service_healthy
 
   airflow-init:
     <<: *airflow-common
