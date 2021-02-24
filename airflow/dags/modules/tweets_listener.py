@@ -3,7 +3,7 @@ import json
 import time
 
 from dateutil import parser
-from tweets_streamer_module import TweetsProducer
+from modules.tweets_producer import TweetsProducer
 
 
 class TweetsListener(tweepy.StreamListener):

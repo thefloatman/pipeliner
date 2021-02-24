@@ -1,12 +1,5 @@
 import tweepy
-
-from log import log
-from retry import RetryOnException as retry
-from proxypool import RedisProxyPoolClient
-from tweets_streamer_module import (
-    TweetsListener
-)
-
+from modules.tweets_listener import TweetsListener
 from airflow.models.baseoperator import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
@@ -24,7 +17,6 @@ access_token_secret=""
 WORLD = [-180,-90,180,90]
 
 
-@log
 class TweetsStreamerOperator(BaseOperator):
 
     @apply_defaults
@@ -35,9 +27,8 @@ class TweetsStreamerOperator(BaseOperator):
         super().__init__(*args, **kwargs)
         self.topic = topic
         self.auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        self.auth.set_access_token(access_key, access_secret)
+        self.auth.set_access_token(access_token, access_token_secret)
 
-    @retry(5)
     def execute(self, context):
         streaming_api = tweepy.streaming.Stream(self.auth, TweetsListener(self.topic))    
         streaming_api.filter(locations=WORLD, track=self.topic)

@@ -15,7 +15,7 @@ x-airflow-common:
   volumes:
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/plugins:/opt/airflow/plugins
-    - ./airflow/modules:/opt/airflow/modules
+    - ./airflow/logs:/opt/airflow/logs
   depends_on:
     postgres:
       condition: service_healthy
