@@ -19,6 +19,22 @@ WORLD = [-180,-90,180,90]
 
 class TweetsStreamerOperator(BaseOperator):
 
+    ## Official Tweepy
+    # @apply_defaults
+    # def __init__(
+    #         self,
+    #         topic,
+    #         *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.topic = topic
+    #     self.auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    #     self.auth.set_access_token(access_token, access_token_secret)
+
+    # def execute(self, context):
+    #     streaming_api = tweepy.streaming.Stream(self.auth, TweetsListener(self.topic))    
+    #     streaming_api.filter(locations=WORLD, track=self.topic)
+
+    # Unofficial Twitter Crawler
     @apply_defaults
     def __init__(
             self,
@@ -26,9 +42,7 @@ class TweetsStreamerOperator(BaseOperator):
             *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.topic = topic
-        self.auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        self.auth.set_access_token(access_token, access_token_secret)
+
 
     def execute(self, context):
-        streaming_api = tweepy.streaming.Stream(self.auth, TweetsListener(self.topic))    
-        streaming_api.filter(locations=WORLD, track=self.topic)
+        TweetsListener(self.topic).perform()
