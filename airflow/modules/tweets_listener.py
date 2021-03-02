@@ -3,6 +3,7 @@ import json
 import time
 
 import twint
+import sys
 from dateutil import parser
 from modules.tweets_producer import TweetsProducer
 
@@ -49,13 +50,24 @@ from modules.tweets_producer import TweetsProducer
 
 # Unofficial twitter streamer API
 class TweetsListener(tweepy.StreamListener):
-    def __init__ (self, kafka_topic):
+    def __init__ (self, kafka_topic, tweets_topic):
         self.kafka_topic = kafka_topic
+        self.tweets_topic = tweets_topic
+
+    
+    def custom_json(self, obj, config):
+        tweet = obj.__dict__
+        TweetsProducer(self.kafka_topic).perform(tweet)
 
     def perform(self):
-        c = twint.Config()
-        c.Search = self.kafka_topic
-        twint.run.Search(c)
 
-        for tweet in twint.output.tweets_list:
-            TweetsProducer().perform(self.kafka_topic, tweet['text'])
+        # Replace Json method in Twint with custom one
+        module = sys.modules["twint.storage.write"]
+        module.Json = self.custom_json
+
+        c = twint.Config()
+        c.Store_json = True
+        c.Limit = 1000
+        c.Output = "tweets.json"
+        c.Search = self.tweets_topic
+        twint.run.Search(c)

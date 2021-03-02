@@ -38,11 +38,13 @@ class TweetsStreamerOperator(BaseOperator):
     @apply_defaults
     def __init__(
             self,
-            topic,
+            kafka_topic,
+            tweets_topic,
             *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.topic = topic
+        self.kafka_topic = kafka_topic
+        self.tweets_topic = tweets_topic
 
 
     def execute(self, context):
-        TweetsListener(self.topic).perform()
+        TweetsListener(self.kafka_topic, self.tweets_topic).perform()

@@ -1,10 +1,17 @@
 FROM puckel/docker-airflow:1.10.9
 
+USER root
+
+RUN apt-get -y update
+RUN apt-get -y install git
+
 WORKDIR /usr/local/airflow
 
 COPY requirements.txt .
 
-RUN pip install -r requirements.txt 
+RUN pip install -r requirements.txt
+
+RUN pip install --user --upgrade git+https://github.com/twintproject/twint.git@origin/master#egg=twint
 
 ENV PYTHONPATH "${PYTHONPATH}:/usr/local/airflow/modules"
 
