@@ -1,5 +1,6 @@
 import json
 from kafka import KafkaProducer
+from modules.message_formatter import MessageFormatter
 
 class SentimentProducer():
     def __init__(self):
@@ -12,5 +13,8 @@ class SentimentProducer():
             'tweet': tweet,
             'sentiment_analysis_result': result
         }
-        data = json.dumps(pre_produced_message).encode('utf-8')
+
+        formatted_message = MessageFormatter().format_entry(pre_produced_message)
+
+        data = json.dumps(formatted_message).encode('utf-8')
         self.producer.send(self.kafka_topic, data)

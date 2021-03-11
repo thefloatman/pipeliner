@@ -1,0 +1,16 @@
+{
+    "name":"mongo-sink",
+    "config": {
+        "connector.class":"com.mongodb.kafka.connect.MongoSinkConnector",
+        "tasks.max":"1",
+        "topics":"tweets.sentiment_analysis",
+        "connection.uri":"mongodb://tweets_sentiment_analysis:tweets_sentiment_analysis@mongo:27017/?replicaSet=rs0",
+        "database":"tweets_sentiment_analysis",
+        "collection":"tweets_sentiment_analysis",
+        "key.converter":"org.apache.kafka.connect.storage.StringConverter",
+        "key.converter.schemas.enable":false,
+        "value.converter":"org.apache.kafka.connect.storage.StringConverter",
+        "value.converter.schemas.enable":false, 
+        "document.id.strategy":"com.mongodb.kafka.connect.sink.processor.id.strategy.ProvidedInValueStrategy"
+    }
+}

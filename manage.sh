@@ -1,7 +1,13 @@
+#!/bin/sh
+
 argument=$1
 
 if [ $argument = "up" ]; then
     echo "Creating infrastructure..."
+    docker-compose up -d mongo
+    sleep 5
+    docker exec -it mongo /usr/local/bin/init.sh
+    sleep 5
     docker-compose up -d
 elif [ $argument = "stop" ]; then
     echo "Stopping infrastructure..."
