@@ -67,7 +67,7 @@ class TweetsListener(tweepy.StreamListener):
 
         c = twint.Config()
         c.Store_json = True
-        c.Limit = 1000
+        c.Limit = 100
         c.Output = "tweets.json"
         c.Search = self.tweets_topic
         twint.run.Search(c)

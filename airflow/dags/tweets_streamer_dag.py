@@ -12,8 +12,6 @@ logging.basicConfig(format="%(name)s-%(levelname)s-%(asctime)s-%(message)s", lev
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-DEFAULT_TOPIC = "tweets"
-
 def create_dag(dag_id):
     default_args = {
         "owner": "pipeliner",
@@ -23,7 +21,7 @@ def create_dag(dag_id):
         "depends_on_past": False,
         "start_date": dates.days_ago(0),
         "retries": 1,
-        "retry_delay": timedelta(minutes=60),
+        "retry_delay": timedelta(minutes=1),
         "provide_context": True,
     }
 
@@ -37,7 +35,7 @@ def create_dag(dag_id):
 
         tweets_streaming = TweetsStreamerOperator(
             task_id="listening_tweets",
-            kafka_topic=DEFAULT_TOPIC,
+            kafka_topic="tweets",
             tweets_topic='Jakarta',
             dag=dag
         )
