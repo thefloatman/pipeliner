@@ -97,6 +97,18 @@ services:
         - kafka
         - schema-registry
 
+  elasticsearch:
+    container_name: elasticsearch
+    build: ./elasticsearch
+    restart: unless-stopped
+    ulimits:
+        memlock:
+            soft: -1
+            hard: -1
+    ports:
+        - 9200:9200
+        
+
   schema-registry:
     container_name: schema-registry
     image: confluentinc/cp-schema-registry:5.3.1
