@@ -4,7 +4,7 @@ My simple project to learn data engineering
 
 ## Architecture
 
-Twitter (Tweepy) => Airflow => Publisher Kafka (Streaming Process) => Apache Spark (Machine Learning and SQL Process) => Kafka Connect to Mongo DB & ES => Tableau Web Data Connector => Tableau
+![Pipeliner Architecture](Pipeliner-Architecture.png)
 
 ## How to run it in local
 
